@@ -4,5 +4,9 @@
     },
     "path-autocomplete.pathMappings":{
         "@":"${folder}/src"
-    }
+    },
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ]
 }

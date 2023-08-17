@@ -1,6 +1,6 @@
 module.exports = {
   // 应用名称
-  APP_NAME: "React Or Antd",
+  APP_NAME: "胶轮车作业标准化云端管理系统",
 
   //部署应用包时的基本 URL，只支持绝对路径，我没有做容错处理，需要严格保持以'/'开头和结尾，一般情况下设置为'/'。
   PUBLIC_PATH: "/react-admin-web/",
