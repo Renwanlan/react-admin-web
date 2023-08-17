@@ -1,77 +1,98 @@
-import { Button, Space, Switch, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import ProTable from "@/components/ProTable";
 import axios from "@/utils/axios";
-
+import ProTable from "@/components/ProTable";
+import { Modal, Button } from "antd";
+import { useState } from "react";
+/* eslint-disable */
 export default function Page() {
+  const [visible, setVisible] = useState(false);
+  const [url, setUrl] = useState('');
+  const [text, setText] = useState('');
+
+  const handleClick = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
   const columns = [
     {
-      title: "角色名称",
-      dataIndex: "roleName",
+      title: "序号",
+      dataIndex: "number",
     },
     {
-      title: "备注",
-      dataIndex: "description",
-      hideInSearch: true,
+      title: "巡检项",
+      dataIndex: "item",
     },
     {
-      title: "状态",
+      title: "车牌号",
+      dataIndex: "carId",
+    },
+    {
+      title: "执行状态",
       dataIndex: "status",
-      render: (status) => <Switch checked={status === 1} />,
-      type: "select",
-      options: [
-        { label: "启用", value: "1" },
-        { label: "禁用", value: "0" },
-      ],
     },
     {
-      title: "操作",
-      key: "action",
-      render: (row) => (
-        <Space>
-          <Button type="primary" ghost size="small">
-            编辑
-          </Button>
-          <Button type="primary" size="small">
-            授权
-          </Button>
-          <Button type="primary" danger size="small">
-            删除
-          </Button>
-        </Space>
-      ),
-      width: 100,
-      fixed: "right",
-      hideInSearch: true,
+      title: "执行人",
+      dataIndex: "name",
+    },
+    {
+      title: "完成时间",
+      dataIndex: "time",
+    },
+    {
+      title: "详细信息",
+      dataIndex: "action",
+      render: (_, record) => {
+        return (
+          <>
+            <Button type="primary" onClick={() => {
+              handleClick();
+              setUrl(record.action);
+              setText(record.text);
+            }}>
+              {"查看"}
+            </Button>
+            <Modal
+              title="详细信息"
+              visible={visible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
+              <p>{text}</p>
+              <img src={url} style={{ width: '500px', height: 'auto' }}/>
+            </Modal>
+    </>
+        );
+      },
     },
   ];
 
   return (
     <ProTable
-      columns={columns}
       rowKey="id"
-      headerTitle="角色列表"
-      request={(params, { current, pageSize }) =>
-        axios
-          .post("/api/role/page", { params, pageIndex: current, pageSize })
-          .then((value) => {
-            const { result: data } = value;
-            return {
-              list: data.records,
-              total: data.total,
-            };
-          })
+      columns={columns}
+      headerTitle="菜单列表"
+      request={() => {
+        return axios.get("/api/get-itemdata").then((value) => {
+          const { result: data } = value;
+          return {
+            list: data,
+          };
+        });
+      }}
+      toolBarRender={
+        <div style={{display: "flex"}}>
+          <p style={{ marginRight: '5em' }}><strong>{'胶轮车运行记录单号:101    '}</strong></p>
+          <p style={{ marginRight: '5em' }}><strong>{'所属班组:井下一队    '}</strong></p>
+          <p  style={{ marginRight: '5em' }}><strong>{'驾驶员：张师傅    '}</strong></p>
+        </div>
       }
-      toolBarRender={() => [
-        <Button
-          key="add"
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => message.warning("演示功能")}
-        >
-          新增
-        </Button>,
-      ]}
-    />
+      pagination={false}
+    ></ProTable>
   );
 }

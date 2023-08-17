@@ -74,7 +74,7 @@ export default function LayoutViwe() {
     // 获取权限路由列表
     setMenuLoading(true);
     axios
-      .get("/api/get-menu-all")
+      .get("/api/get-menu")
       .then((value) => {
         const userMenus = value.result || [];
         setInitialMenuList(userMenus);
@@ -85,7 +85,7 @@ export default function LayoutViwe() {
   });
 
   const siderConfig = {
-    width: 210,
+    width: 330,
     collapsedWidth: 64,
     collapsed,
     theme: "light",
